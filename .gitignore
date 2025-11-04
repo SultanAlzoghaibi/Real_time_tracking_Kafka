@@ -1,0 +1,58 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+*.out
+*.tmp
+
+# ---- Virtual Environments ----
+venv/
+env/
+ENV/
+.venv/
+.env/
+*.env
+*.n3
+
+# ---- IDEs ----
+# PyCharm / IntelliJ
+.idea/
+*.iml
+
+# VSCode (if you ever use it)
+.vscode/
+
+# ---- OS Files ----
+.DS_Store
+Thumbs.db
+
+# ---- Kafka / Data ----
+*.db
+*.sqlite
+*.csv
+*.json
+*.avro
+*.parquet
+
+# ---- Testing & Coverage ----
+.coverage
+.pytest_cache/
+htmlcov/
+.cache/
+
+# ---- Jupyter Notebooks ----
+.ipynb_checkpoints
+
+# ---- Temporary files ----
+*.swp
+*.bak
+*.tmp
+*.log
