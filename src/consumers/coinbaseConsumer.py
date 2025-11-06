@@ -1,31 +1,32 @@
-from confluent_kafka import Consumer, KafkaException
+from confluent_kafka import Consumer
 
-# Kafka configuration
 conf = {
-    'bootstrap.servers': 'localhost:9092',  # or 'host.docker.internal:9092' if running from Docker
-    'group.id': 'my-simple-group',
-    'auto.offset.reset': 'earliest'  # Read from beginning if no offset
+    'bootstrap.servers': 'localhost:9092',
+    'group.id': 'my-group',
+    'auto.offset.reset': 'earliest'
 }
 
-# Create the consumer
 consumer = Consumer(conf)
 
-# Subscribe to topic
-consumer.subscribe(['crypto'])
+# Explicitly assign to partition 2
+from confluent_kafka import TopicPartition
+consumer.assign([TopicPartition("coinbase", 2)])
+
+print("⏳ Waiting for ETH messages in partition 2...\n")
 
 try:
-    print("Waiting for messages...\nPress Ctrl+C to exit.\n")
     while True:
-        msg = consumer.poll(1.0)  # Wait up to 1 second
+        msg = consumer.poll(1.0)
         if msg is None:
             continue
         if msg.error():
-            raise KafkaException(msg.error())
+            print(f"⚠️ Error: {msg.error()}")
+            continue
 
-        print(f"Received message: key={msg.key().decode() if msg.key() else None}, value={msg.value().decode()}")
+        print(f"📨 Received: {msg.value().decode()} (key={msg.key().decode()})")
+        # 👉 This is where you'd send it to a user
 
 except KeyboardInterrupt:
-    print("\nInterrupted. Closing consumer...")
-
+    print("Stopping...")
 finally:
     consumer.close()

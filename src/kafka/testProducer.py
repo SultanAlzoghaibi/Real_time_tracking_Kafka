@@ -17,7 +17,7 @@ def delivery_report(err, msg):
         print(f"Delivered message to {msg.topic()} [{msg.partition()}]")
 
 # Send data to topic "crypto"
-producer.produce("coinbase", key="eth", value="ETH price is 3500", callback=delivery_report)
+producer.produce("coinbase", key="ETH", value="ETH price is 3500", callback=delivery_report)
 
 # Wait for delivery
 producer.flush()
