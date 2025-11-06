@@ -13,7 +13,7 @@ def on_message(ws, message):
     global msg_count
     msg_count += 1
     data = json.loads(message)
-    print(json.dumps(data, indent=2))
+    #print(json.dumps(data, indent=2))
 
     #TODO: SEND TO KAFKA BASED ON product_ids
 
@@ -25,7 +25,18 @@ def on_open(ws):
     print("[Connected] Subscribing to BTC-USD ticker...")
     sub_msg = {
         "type": "subscribe",
-        "product_ids": ["BTC-USD",],
+        "product_ids": [
+            "BTC-USD",  # Bitcoin
+            "ETH-USD",  # Ethereum
+            "SOL-USD",  # Solana
+            "ADA-USD",  # Cardano
+            "AVAX-USD",  # Avalanche
+            "DOGE-USD",  # Dogecoin
+            "LINK-USD",  # Chainlink
+            "DOT-USD",  # Polkadot
+            "MATIC-USD",  # Polygon
+            "LTC-USD"  # Litecoin
+        ],
         "channels": ["ticker"]
     }
 
@@ -50,7 +61,7 @@ def main():
     import threading
     thread = threading.Thread(target=run_for_duration)
     thread.start()
-    time.sleep(5)
+    time.sleep(10)
     ws.close()
 
 if __name__ == "__main__":
