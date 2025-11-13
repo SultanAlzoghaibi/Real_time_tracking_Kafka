@@ -4,8 +4,16 @@ from dotenv import load_dotenv
 load_dotenv()
 FINNHUB_TOKEN = os.getenv("FINNHUB_TOKEN")  # reads from your environment
 TICKERS = [
-
-    "AAPL", "MSFT", "TSLA", "AMZN"
+    "BINANCE:TONUSDT",   # Toncoin
+    "BINANCE:WIFUSDT",   # dogwifhat (Solana meme coin)
+    "BINANCE:PEPEUSDT",  # PEPE meme coin
+    "BINANCE:FETUSDT",   # Fetch.ai
+    "BINANCE:ARBUSDT",   # Arbitrum
+    "BINANCE:STXUSDT",   # Stacks
+    "BINANCE:ORDIUSDT",  # ORDI (BRC-20)
+    "BINANCE:BLURUSDT",  # Blur
+    "BINANCE:WUSDT",     # Wrapped USDT (wrapped tokens)
+    "BINANCE:RENDERUSDT" # Render Network
 ]
 
 count = 0
@@ -14,6 +22,8 @@ start_time = None
 def on_message(ws, message):
     global count
     data = json.loads(message)
+
+    if count
     if data.get("type") == "trade":
         count += len(data["data"])
 

@@ -13,6 +13,7 @@ def on_message(ws, message):
     global count
     data = json.loads(message)
     if count % 1000 == 0:
+        print("\n")
         print(data)
     if data.get("type") == "trade":
         count += len(data["data"])

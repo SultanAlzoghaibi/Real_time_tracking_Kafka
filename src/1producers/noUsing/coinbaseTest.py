@@ -22,20 +22,20 @@ def on_message(ws, message):
 def on_open(ws):
     global start_time
     start_time = time.time()
-    print("[Connected] Subscribing to BTC-USD ticker...")
+    print("[Connected] Subscribing to altcoin tickers...")
     sub_msg = {
         "type": "subscribe",
         "product_ids": [
-            "BTC-USD",  # Bitcoin
-            "ETH-USD",  # Ethereum
-            "SOL-USD",  # Solana
-            "ADA-USD",  # Cardano
-            "AVAX-USD",  # Avalanche
-            "DOGE-USD",  # Dogecoin
-            "LINK-USD",  # Chainlink
-            "DOT-USD",  # Polkadot
-            "MATIC-USD",  # Polygon
-            "LTC-USD"  # Litecoin
+            "ARB-USD",   # Arbitrum
+            "OP-USD",    # Optimism
+            "IMX-USD",   # Immutable
+            "APT-USD",   # Aptos
+            "INJ-USD",   # Injective
+            "SUI-USD",   # Sui
+            "RNDR-USD",  # Render
+            "TIA-USD",   # Celestia
+            "PYTH-USD",  # Pyth Network
+            "JTO-USD"    # Jito
         ],
         "channels": ["ticker"]
     }
