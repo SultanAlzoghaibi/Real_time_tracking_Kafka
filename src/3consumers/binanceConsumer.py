@@ -36,7 +36,7 @@ try:
             print(f"⚠️ Kafka error: {msg.error()}")
             continue
 
-        raw_key = msg.key().decode('utf-8')
+        raw_key = msg.key().decode('utf-8') if msg.key() is not None else None
         raw_value = msg.value().decode('utf-8')
 
         try:
@@ -60,9 +60,9 @@ try:
 
             # Insert into DB (no raw JSON)
             cursor.execute("""
-                INSERT INTO trades (symbol, trade_time, price, quantity, stream)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (symbol, trade_time, price, quantity, stream))
+                INSERT INTO trades (symbol, trade_time, price, quantity)
+                VALUES (%s, %s, %s, %s)
+            """, (symbol, trade_time, price, quantity))
             conn.commit()
 
             print(f"✅ Saved {symbol} @ ${price} x {quantity}")

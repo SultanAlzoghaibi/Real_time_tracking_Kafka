@@ -3,8 +3,23 @@ from dotenv import load_dotenv
 
 load_dotenv()
 FINNHUB_TOKEN = os.getenv("FINNHUB_TOKEN")  # reads from your environment
-TICKERS = ["BINANCE:BTCUSDT", "BINANCE:ETHUSDT", "BINANCE:SOLUSDT", "BINANCE:ADAUSDT", "BINANCE:AVAXUSDT",
-           "BINANCE:DOGEUSDT", "BINANCE:LINKUSDT", "BINANCE:DOTUSDT", "BINANCE:MATICUSDT", "BINANCE:LTCUSDT"]
+TICKERS = [
+    "AAPL",       # Apple
+    "MSFT",       # Microsoft
+    "GOOGL",      # Alphabet (Google)
+    "AMZN",       # Amazon
+    "TSLA",       # Tesla
+    "META",       # Meta Platforms (Facebook)
+    "NVDA",       # NVIDIA
+    "NFLX",       # Netflix
+    "BRK.B",      # Berkshire Hathaway
+    "V",          # Visa
+    "JPM",        # JPMorgan Chase
+    "JNJ",        # Johnson & Johnson
+    "WMT",        # Walmart
+    "PG",         # Procter & Gamble
+    "DIS"         # Disney
+]
 
 count = 0
 start_time = None

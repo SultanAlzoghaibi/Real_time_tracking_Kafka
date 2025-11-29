@@ -1,2 +1,14 @@
 cd kafka_2.13-4.1.0
+
+bin/kafka-storage.sh format -t $(uuidgen) -c config/kraft/server.properties --standalone
 bin/kafka-server-start.sh config/server.properties
+
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --create \
+  --topic fakestock \
+  --partitions 10 \
+  --replication-factor 1
+
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --create \
+  --topic binance \
+  --partitions 10 \
+  --replication-factor 1
