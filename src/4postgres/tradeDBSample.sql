@@ -83,6 +83,18 @@ ALTER SEQUENCE public.trades_id_seq OWNED BY public.trades.id;
 
 ALTER TABLE ONLY public.trades ALTER COLUMN id SET DEFAULT nextval('public.trades_id_seq'::regclass);
 
+CREATE TABLE public.asset_volatility (
+    symbol         TEXT PRIMARY KEY,
+    avr_volatility DOUBLE PRECISION NOT NULL,
+    last_price     NUMERIC(18,8)
+);
+
+CREATE TABLE public.alerts (
+    id         SERIAL PRIMARY KEY,
+    symbol     TEXT NOT NULL,
+    message    TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
 
 --
 -- TOC entry 3779 (class 0 OID 40962)
