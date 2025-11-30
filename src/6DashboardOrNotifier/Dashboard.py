@@ -109,69 +109,109 @@ DEFAULT_SYMBOLS = [
 ]
 
 app.layout = html.Div(
-    style={"fontFamily": "Georgia, serif", "padding": "20px", "backgroundColor": "#B5EFEF"},
+    style={
+        "fontFamily": "Inter, sans-serif",
+        "padding": "25px",
+        "backgroundColor": "#0d1117",
+        "minHeight": "100vh",
+        "color": "#e6edf3",
+    },
     children=[
         html.H1(
             "Crypto Live Dashboard",
-            style={"textAlign": "center", "marginBottom": "20px"},
+            style={
+                "textAlign": "center",
+                "marginBottom": "25px",
+                "color": "#58a6ff",
+                "fontSize": "38px",
+                "fontWeight": "700",
+            },
         ),
 
-        # Symbol selector
-        dcc.Dropdown(
-            id="symbol-dropdown",
-            options=[{"label": s, "value": s} for s in DEFAULT_SYMBOLS],
-            value="BTCUSDT",
-            clearable=False,
-            style={"width": "300px", "margin": "0 auto 20px auto"},
-        ),
-
-        # Slider: how many recent trades we show
+        # ---- SYMBOL DROPDOWN ----
         html.Div(
-            style={"textAlign": "center", "marginBottom": "10px"},
+            style={"maxWidth": "350px", "margin": "0 auto 30px auto"},
             children=[
-                html.Span("Show last "),
+                dcc.Dropdown(
+                    id="symbol-dropdown",
+                    options=[{"label": s, "value": s} for s in DEFAULT_SYMBOLS],
+                    value="BTCUSDT",
+                    clearable=False,
+                    style={
+                        "color": "black",
+                        "borderRadius": "8px",
+                        "padding": "5px",
+                        "fontSize": "18px",
+                    },
+                ),
+            ]
+        ),
+
+        # ---- SLIDER ----
+        html.Div(
+            style={"textAlign": "center", "marginBottom": "20px"},
+            children=[
+                html.Span("Display last N trades", style={"fontSize": "18px"}),
                 dcc.Slider(
                     id="points-slider",
-                    min=50,
-                    max=400,
-                    step=50,
+                    min=10000,
+                    max=100000,
+                    step=10000,
                     value=200,
                     marks={i: str(i) for i in range(50, 401, 50)},
                     tooltip={"placement": "bottom", "always_visible": False},
                 ),
-                html.Div(id="points-label", style={"marginTop": "8px"}),
+                html.Div(id="points-label", style={"marginTop": "10px", "color": "#9da5b4"}),
             ],
         ),
 
-        # Main price chart
-        dcc.Graph(
-            id="price-chart",
-            style={"height": "500px"},
+        # ---- CHART ----
+        html.Div(
+            style={
+                "backgroundColor": "#161b22",
+                "padding": "20px",
+                "borderRadius": "12px",
+                "boxShadow": "0px 4px 12px rgba(0, 0, 0, 0.4)",
+                "maxWidth": "1000px",
+                "margin": "0 auto",
+            },
+            children=[
+                dcc.Graph(
+                    id="price-chart",
+                    style={"height": "520px"},
+                    config={"displayModeBar": False},
+                ),
+            ]
         ),
 
-        # Recent alerts section
+        # ---- ALERTS PANEL (Right Below) ----
         html.Div(
-            style={"maxWidth": "900px", "margin": "20px auto"},
+            style={
+                "maxWidth": "1000px",
+                "margin": "30px auto",
+                "backgroundColor": "#161b22",
+                "padding": "20px",
+                "borderRadius": "12px",
+                "boxShadow": "0px 4px 12px rgba(0,0,0,0.4)",
+            },
             children=[
-                html.H3("Recent alerts", style={"textAlign": "center"}),
+                html.H3(
+                    "Recent Alerts",
+                    style={"textAlign": "center", "color": "#58a6ff", "marginBottom": "10px"},
+                ),
                 html.Ul(
                     id="alerts-list",
                     style={
                         "listStyleType": "none",
                         "padding": 0,
                         "margin": 0,
-                        "textAlign": "left",
+                        "fontSize": "16px",
                     },
                 ),
             ],
         ),
 
-        # Auto-refresh timer → every 0.5 seconds (500 ms)
-        dcc.Interval(
-            id="update-interval",
-            interval=500,  # 500 milliseconds = 0.5 s
-            n_intervals=0,
-        ),
+        dcc.Interval(id="update-interval", interval=1000, n_intervals=0),
     ],
 )
 
@@ -196,19 +236,17 @@ def update_points_label(n_points):
     ],
 )
 def update_chart(selected_symbol, n_points, n_intervals):
-    """
-    Every 0.5 s:
-      - pull fresh trades from DB
-      - redraw chart with price + MA(10)
-    """
     df = fetch_trades(selected_symbol, limit=n_points)
 
     if df.empty:
         return go.Figure(
             layout=go.Layout(
                 title=f"{selected_symbol} – no data found",
-                xaxis=dict(title="Time"),
-                yaxis=dict(title="Price (USDT)"),
+                xaxis=dict(title="Time", color="#e6edf3"),
+                yaxis=dict(title="Price (USDT)", color="#e6edf3"),
+                paper_bgcolor="#161b22",
+                plot_bgcolor="#0d1117",
+                font=dict(color="#e6edf3"),
             )
         )
 
@@ -218,6 +256,8 @@ def update_chart(selected_symbol, n_points, n_intervals):
         y=df["price"],
         mode="lines+markers",
         name="Price",
+        line=dict(color="#58a6ff", width=2),
+        marker=dict(color="#1f6feb")
     )
 
     traces = [price_trace]
@@ -230,19 +270,22 @@ def update_chart(selected_symbol, n_points, n_intervals):
             y=df["ma_10"],
             mode="lines",
             name="MA(10)",
-            line=dict(dash="dash"),
+            line=dict(color="#2ea043", width=2, dash="dash"),
         )
         traces.append(ma_trace)
 
     layout = go.Layout(
         title=f"{selected_symbol} – last {len(df)} trades",
-        xaxis=dict(title="Trade Time"),
-        yaxis=dict(title="Price (USDT)"),
+        xaxis=dict(title="Trade Time", color="#e6edf3"),
+        yaxis=dict(title="Price (USDT)", color="#e6edf3"),
         hovermode="x unified",
+
+        # --- Fix the ugly colors ---
+        paper_bgcolor="#161b22",  # dark grey card
+        plot_bgcolor="#0d1117",   # charcoal black panel
+        font=dict(color="#e6edf3"),
+
         margin=dict(l=60, r=30, t=70, b=60),
-        paper_bgcolor="#C0F6CE",
-        plot_bgcolor="#CEE6F1",
-        font=dict(color="black"),
     )
 
     return go.Figure(data=traces, layout=layout)

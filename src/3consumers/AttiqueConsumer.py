@@ -7,7 +7,7 @@ from confluent_kafka import Consumer
 # This connects our Python code to the "trades" database in PostgreSQL.
 conn = psycopg2.connect(
     dbname='trades',
-    user='',
+    user='sultanalzoghaibi',
     password='',
     host='localhost',
     port='5432'

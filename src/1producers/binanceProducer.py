@@ -21,14 +21,25 @@ producer = Producer({'bootstrap.servers': 'localhost:9092'})
 # --- Assign fixed partitions per symbol ---
 partition_map = {symbol: i for i, symbol in enumerate(symbols)}
 
-# --- Message counter ---
+# --- Message counters ---
 msg_count = 0
-start_time = None
+window_start = time.time()
+
 
 # --- WebSocket callbacks ---
 def on_message(ws, message):
-    global msg_count
+    global msg_count, window_start
     msg_count += 1
+
+    # ------------------------------------------
+    # Throughput monitor (every 5k messages)
+    # ------------------------------------------
+    if msg_count % 5000 == 0:
+        now = time.time()
+        elapsed = now - window_start
+        rps = 5000 / elapsed if elapsed > 0 else 0
+        print(f"\n📊 [Stats] Last 5000 msgs in {elapsed:.2f}s — {rps:.2f} msg/sec")
+        window_start = now
 
     try:
         data = json.loads(message)
@@ -45,13 +56,14 @@ def on_message(ws, message):
     except Exception as e:
         print(f"❌ Kafka send error: {e}")
 
+
 def on_open(ws):
-    global start_time
-    start_time = time.time()
     print(f"✅ Connected to Binance WebSocket. Tracking: {', '.join(symbols)}")
+
 
 def on_close(ws, code, msg):
     print("⚠️ WebSocket closed. Will reconnect...")
+
 
 # --- Keep-alive loop (auto-reconnect forever) ---
 def run_forever():
@@ -67,6 +79,7 @@ def run_forever():
         except Exception as e:
             print(f"💥 Error in WebSocket loop: {e}")
         time.sleep(5)  # Avoid spamming reconnects
+
 
 # --- Main entry point ---
 if __name__ == "__main__":
