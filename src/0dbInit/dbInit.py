@@ -1,5 +1,4 @@
 import psycopg2
-from psycopg2 import sql
 
 # -----------------------------
 # PostgreSQL connection config
@@ -12,7 +11,7 @@ DB_PORT = "5432"
 
 
 # -----------------------------
-# SQL SCHEMA DEFINITIONS
+# SQL SCHEMA DEFINITIONS (MATCHES pg_dump)
 # -----------------------------
 
 CREATE_TRADES_TABLE = """
@@ -22,16 +21,15 @@ CREATE TABLE IF NOT EXISTS public.trades (
     trade_time BIGINT,
     price NUMERIC,
     quantity NUMERIC,
-    stream TEXT,
-    inserted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    stream TEXT
 );
 """
 
 CREATE_ASSET_VOLATILITY = """
 CREATE TABLE IF NOT EXISTS public.asset_volatility (
     symbol TEXT PRIMARY KEY,
-    avr_volatility DOUBLE PRECISION NOT NULL,
-    last_price NUMERIC(18,8)
+    avr_volatility NUMERIC,
+    last_price NUMERIC
 );
 """
 
@@ -40,7 +38,7 @@ CREATE TABLE IF NOT EXISTS public.alerts (
     id SERIAL PRIMARY KEY,
     symbol TEXT NOT NULL,
     message TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 """
 
